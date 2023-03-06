@@ -1,0 +1,57 @@
+---
+# tasks file for hardening
+- name: Upgrade system packages
+  apt:
+    upgrade: true
+    update_cache: true
+    cache_valid_time: 86400  # one day
+    autoremove: true
+
+- name: Install system packages
+  apt:
+    name:
+      - fail2ban
+      - iptables
+      - ufw
+      - ssh
+    state: latest
+
+- name: Limit ssh connections
+  ufw:
+    rule: limit
+    port: ssh
+    proto: tcp
+  notify: reload ufw
+
+- name: Allow http/s through firewall
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop:
+    - 80
+    - 443
+  notify: reload ufw
+
+- name: Deny all other incoming access
+  ufw:
+    state: enabled
+    direction: incoming
+    policy: deny
+  notify: reload ufw
+
+- name: Add tighter ssh security options than default
+  copy:
+    src: sshd_config.conf
+    dest: /etc/ssh/sshd_config.d/
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload sshd
+
+- name: Configure fail2ban
+  copy:
+    src: jail.local
+    dest: /etc/fail2ban/jail.local
+    mode: 0644
+  notify: restart fail2ban

@@ -1,0 +1,39 @@
+---
+- name: Set up server
+  hosts: main
+  become: true
+
+  handlers:
+    - name: reload nginx
+      service:
+        name: nginx
+        state: reloaded
+        enabled: true
+
+  pre_tasks:
+    - name: Update apt cache
+      apt: update_cache=yes cache_valid_time=3600
+    - name: Install packages required for ansible on the remote server
+      apt:
+        name:
+          - python3-venv
+          - python3-pip
+          - acl
+        state: present
+
+  roles:
+    - role: users
+      tags:
+        - users
+        - setup
+    - role: hardening
+      tags:
+        - hardening
+        - setup
+    - role: swap
+      tags:
+        - swap
+        - setup
+    - role: nginx
+      tags: nginx
+

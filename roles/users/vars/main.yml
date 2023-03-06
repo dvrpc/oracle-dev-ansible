@@ -1,0 +1,6 @@
+---
+# vars file for users
+users:
+  - kwarner
+sudoers:
+  - kwarner
