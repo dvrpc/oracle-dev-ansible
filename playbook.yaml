@@ -2,6 +2,7 @@
 - name: Set up server
   hosts: main
   become: true
+  become_user: root
 
   handlers:
     - name: reload nginx
@@ -20,6 +21,11 @@
           - python3-pip
           - acl
         state: present
+    - name: Install other required packages
+      apt:
+        name: 
+          - git
+        state: present
 
   roles:
     - role: users
@@ -37,3 +43,25 @@
     - role: nginx
       tags: nginx
 
+- name: Install rust and rust programs (as user running the playbook)
+  hosts: main
+
+  roles:
+    - role: rust
+      tags: rust
+
+- name: Install python-related programs
+  hosts: main
+  become: true
+
+  roles:
+    - role: python
+      tags: python
+
+- name: Deploy traffic counts API
+  hosts: main
+  become: true
+
+  roles:
+    - role: traffic-counts-api
+      tags: traffic-counts-api

@@ -1,0 +1,4 @@
+---
+# vars file for rust
+install_helix: false
+install_zellij: true

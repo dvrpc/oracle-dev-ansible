@@ -1,0 +1,11 @@
+galaxy_info:
+  author: Kris Warner
+  description: Set up Traffic Counts API for development
+  license: GPL-3.0-or-later
+  min_ansible_version: 2.11
+  platforms:
+    - name: Debian
+      versions:
+        - 11
+  galaxy_tags: []
+dependencies: []

@@ -1,0 +1,14 @@
+---
+# handlers file for econ_data
+- name: "restart {{ app_long_name }} gunicorn server"
+  systemd:
+    name: "{{ app_short_name }}.service"
+    state: restarted
+    enabled: true
+    daemon_reload: true
+
+- name: reload nginx
+  service:
+    name: nginx
+    state: reloaded
+    enabled: true

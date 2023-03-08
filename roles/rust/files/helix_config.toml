@@ -1,0 +1,37 @@
+theme = "boo_berry"
+
+[editor]
+color-modes = true
+cursorline = true
+rulers = [100]
+bufferline = "multiple"
+true-color = true
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.file-picker]
+hidden = false
+
+[editor.soft-wrap]
+enable = true
+wrap-indicator = ""
+
+[keys.normal]
+C-o = ":open ~/.config/helix/config.toml" # Maps the Control-o to opening of the helix config file
+"C-S-esc" = "extend_line" # Maps Control-Shift-Escape to extend_line
+g = { a = "code_action" } # Maps `ga` to show possible code actions
+"ret" = ["open_below", "normal_mode"] # Maps the enter key to open_below then re-enter normal mode
+"tab" = ":bn"
+"S-tab" = ":bp"
+
+# "\\" is how to use \ as the beginning of a mapping,
+# and so this is a subtable of keys.normal for \
+[keys.normal."\\"]
+c = ":bc"
+g = "goto_file"
+
+[keys.insert]
+j = { k = "normal_mode" } # Maps `jk` to exit insert mode

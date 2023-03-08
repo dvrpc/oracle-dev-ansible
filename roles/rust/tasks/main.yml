@@ -1,0 +1,97 @@
+---
+# tasks file for rust
+- name: Update Rust or install it if not already installed.
+  block:
+    - name: Try to update rust (Rust is installed if this doesn't fail)
+      shell: ~/.cargo/bin/rustup update
+  rescue:
+    - name: Download the install script.
+      get_url:
+        url: https://sh.rustup.rs
+        dest: ~/
+        mode: 0755
+
+    - name: Run the install script.
+      shell: ~/rustup-init.sh -y
+
+- name: Install Rust LSP
+  shell: ~/.cargo/bin/rustup component add rust-analyzer
+
+- name: Install Helix editor
+  block:
+    - name: Clone repo
+      git:
+        repo: https://github.com/helix-editor/helix
+        version: master
+        dest: ~/helix
+        accept_hostkey: true
+      when: install_helix
+      register: helix
+  
+    - name: Create .config/helix directory
+      file:
+        path: ~/.config/helix
+        state: directory
+      when: install_helix
+
+    - name: Install it
+      shell:
+        chdir: ~/helix
+        cmd: ~/.cargo/bin/cargo install --locked --path helix-term
+      when: install_helix and helix.changed
+
+    - name: Symlink runtime
+      file:
+        src: ~/helix/runtime
+        dest: ~/.config/helix/runtime
+        state: link
+      when: install_helix
+
+    - name: Fetch grammars
+      shell: ~/.cargo/bin/hx --grammar fetch
+      when: install_helix and helix.changed
+
+    - name: Build grammars
+      shell: ~/.cargo/bin/hx --grammar build
+      when: install_helix and helix.changed
+
+    - name: Add config
+      copy:
+        src: helix_config.toml
+        dest: ~/.config/helix/config.toml
+      when: install_helix
+
+- name: Install zellij
+  block:
+    - name: Download release
+      get_url: 
+        url: https://github.com/zellij-org/zellij/releases/download/v0.35.1/zellij-x86_64-unknown-linux-musl.tar.gz    
+        dest: ~/zellij.tar.gz
+  
+    - name: Unarchive it
+      unarchive:
+        dest: ~/.cargo/bin
+        src: ~/zellij.tar.gz
+        remote_src: true
+      when: install_zellij
+
+    - name: Create config directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - ~/.config/zellij
+        - ~/.config/zellij/layouts
+      when: install_zellij
+
+    - name: Add main config
+      copy:
+        src: zellij_config.kdl
+        dest: ~/.config/zellij/config.kdl
+      when: install_zellij
+
+    - name: Add layout config
+      copy:
+        src: zellij_layout_default.kdl
+        dest: ~/.config/zellij/layouts/default.kdl
+ 

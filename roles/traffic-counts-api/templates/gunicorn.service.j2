@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn server for {{ app_long_name }}
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory={{ app1_dir }}
+Environment="PATH={{ app1_dir }}/ve/bin"
+ExecStart={{ app1_dir }}/ve/bin/gunicorn --workers 3 --max-requests 250 --max-requests-jitter 10 -k uvicorn.workers.UvicornWorker --bind unix:/run/{{ app_short_name }}.sock -m 007 main:app
+
+[Install]
+WantedBy=multi-user.target

@@ -15,3 +15,15 @@
   loop:
     - sites-available
     - sites-enabled
+
+- name: Create locations directory
+  file:
+    path: /etc/nginx/locations
+    state: directory
+
+# in production this will already be handled by the rp role/server
+- name: Copy template nginx config to server
+  copy:
+    src: dev_oracle.conf
+    dest: /etc/nginx/conf.d/
+  notify: reload nginx

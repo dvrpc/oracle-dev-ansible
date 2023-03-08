@@ -1,0 +1,54 @@
+---
+# tasks to run on the app1 server
+# - name: Include secret vars
+#   include_vars: secrets.yml
+
+# - name: "Clone/pull DVRPC {{ app_short_name }} repository"
+#   git:
+#     repo: "{{ code_repo }}"
+#     dest: "{{ app1_dir }}"
+#     version: main
+#     accept_hostkey: true
+#   register: repo_status
+#   notify: "restart {{ app_long_name }} gunicorn server"
+
+# - name: Create config.py file with various environment variables
+#   copy:
+#     dest: "{{ app1_dir }}/config.py"
+#     content: |
+#       PG_CREDS = "postgresql://{{ db_user }}:{{ db_user_pass }}@{{ hostvars['db']['ansible_host'] }}:5432/{{ db_name }}"
+#     mode: 0640
+#   register: config_file
+#   notify: "restart {{ app_long_name }} gunicorn server"
+
+# - name: Set up virtual environment and install requirements
+#   pip:
+#     requirements: "{{ app1_dir }}/requirements_prod.txt"
+#     virtualenv: "{{ app1_dir }}/ve"
+#     virtualenv_command: /usr/bin/python3 -m venv
+
+# - name: Set owner/group of app directory
+#   file:
+#     path: "{{ app1_dir }}"
+#     group: www-data
+#     recurse: true
+#   when: repo_status.changed or config_file.changed
+
+- name: Config the gunicorn server
+  template:
+    src: "{{ gunicorn_unit_file }}"
+    dest: "/etc/systemd/system/{{ app_short_name }}.service"
+    mode: 0644
+  notify: "restart {{ app_long_name }} gunicorn server"
+
+- name: Upload nginx configuration
+  template:
+    src: "{{ app1_nginx_conf_file }}"
+    dest: "/etc/nginx/locations/{{ app_short_name }}.conf"
+    mode: 0644
+  notify: reload nginx
+
+- name: Upload tnsnames
+  copy:
+    src: tnsnames.ora
+    dest: /home/kwarner/traffic-counts-api/
