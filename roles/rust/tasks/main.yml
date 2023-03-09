@@ -55,10 +55,16 @@
       shell: ~/.cargo/bin/hx --grammar build
       when: install_helix and helix.changed
 
-    - name: Add config
+    - name: Add main config
       copy:
         src: helix_config.toml
         dest: ~/.config/helix/config.toml
+      when: install_helix
+
+    - name: Add languages config
+      copy:
+        src: helix_languages.toml
+        dest: ~/.config/helix/languages.toml
       when: install_helix
 
 - name: Install zellij
