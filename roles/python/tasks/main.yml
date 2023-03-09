@@ -4,3 +4,20 @@
   pip:
     name:
       - python-lsp-server
+  become: true
+
+- name: Install pipx
+  pip:
+    name: pipx
+    extra_args: --user
+
+- name: Install various python packages via pipx.
+  block:
+    - name: Check what's already installed by pipx.
+      shell: "{{ pipx_path }}/pipx list"
+      register: pipx_list
+
+    - name: Install black via pipx
+      shell: "{{ pipx_path }}/pipx install black"
+      when: pipx_list.stdout.find("black") == -1
+

@@ -50,9 +50,8 @@
     - role: rust
       tags: rust
 
-- name: Install python-related programs
+- name: Install python-related programs (some as user, some as root)
   hosts: main
-  become: true
 
   roles:
     - role: python
