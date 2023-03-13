@@ -1,9 +1,10 @@
 ---
 # tasks file for python
-- name: Install Python LSP
+- name: Install Python LSP and its mypy plugin
   pip:
     name:
       - python-lsp-server
+      - pylsp-mypy
   become: true
 
 - name: Install pipx
@@ -20,4 +21,3 @@
     - name: Install black via pipx
       shell: "{{ pipx_path }}/pipx install black"
       when: pipx_list.stdout.find("black") == -1
-
