@@ -64,3 +64,10 @@
   roles:
     - role: traffic-counts-api
       tags: traffic-counts-api
+
+- name: Install shell and terminal programs (as user running the playbook)
+  hosts: main
+
+  roles:
+    - role: shell_terminal
+      tags: shell_terminal

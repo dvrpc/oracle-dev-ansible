@@ -1,0 +1,35 @@
+---
+# tasks file for roles/shell_terminal
+- name: Set up fish shell
+  block:
+    - name: Install fish shell
+      become: true
+      apt:
+        deb: https://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_11/amd64/fish_3.6.0-1_amd64.deb
+
+    - name: Make fish shell the user's shell
+      become: true
+      user:
+        name: "{{ ansible_user }}"
+        shell: /usr/bin/fish
+
+    - name: Make directory for fish config
+      file:
+        path: ~/.config/fish
+        state: directory
+
+    - name: Upload config files
+      copy:
+        src: "{{ item }}"
+        dest: ~/.config/fish/
+      loop:
+        - config.fish
+        - fish_variables
+
+    - name: Upload functions
+      copy:
+        src: "{{ item }}"
+        dest: ~/.config/fish/functions/
+      loop:
+        - fish_prompt.fish
+        - fish_right_prompt.fish

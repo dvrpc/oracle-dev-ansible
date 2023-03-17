@@ -1,0 +1,9 @@
+galaxy_info:
+  author: KW
+  description: Set up shell and terminal programs.
+  license: GPL-3.0-only
+  min_ansible_version: 2.11
+  platforms:
+    - name: Debian
+      versions: 11
+dependencies: []
