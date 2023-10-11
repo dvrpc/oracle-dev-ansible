@@ -1,0 +1,10 @@
+---
+# vars file for roles/oracle
+oracle_download: https://download.oracle.com/otn_software/linux/instantclient/2111000/instantclient-basic-linux.x64-21.11.0.0.0dbru.zip
+oracle_path: /usr/lib/oracle
+client_version: instantclient_21_11
+wallet_zip: Wallet_dvrpcprod.zip
+wallet_path: "{{ oracle_path }}/{{ client_version }}/Wallet_dvrpcprod/"
+oracle_env_vars:
+  LD_LIBRARY_PATH: "{{ oracle_path }}/{{ client_version }}:$LD_LIBRARY_PATH"
+  TNS_ADMIN: "{{ oracle_path }}/{{ client_version }}/network/admin/"

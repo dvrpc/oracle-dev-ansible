@@ -42,6 +42,8 @@
         - setup
     - role: nginx
       tags: nginx
+    - role: oracle
+      tags: oracle
 
 - name: Install rust and rust programs (as user running the playbook)
   hosts: main

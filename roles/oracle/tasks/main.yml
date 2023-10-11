@@ -1,0 +1,56 @@
+---
+# tasks file for roles/oracle
+
+# Following <https://odpi-c.readthedocs.io/en/latest/user_guide/installation.html>
+
+- name: Install necessary system packages
+  apt:
+    name: 
+      - libaio1
+      - unzip
+    state: present
+    
+- name: Make directory to contain Oracle client library
+  file:
+    path: "{{ oracle_path }}"
+    state: directory
+    
+- name: Upload tnsnames
+  copy:
+    src: tnsnames.ora
+    dest: "{{ oracle_path }}/{{ client_version }}/network/admin/"
+
+# this file is also included in files/, but not in included in repo.
+- name: Download zip of Oracle Basic client
+  get_url:
+    url: "{{ oracle_download }}"
+    dest: "{{ oracle_path }}/oracle.zip"
+    force: true
+
+- name: Unarchive Oracle zip
+  unarchive:
+    src: "{{ oracle_path }}/oracle.zip"
+    dest: "{{ oracle_path }}" 
+    remote_src: yes
+
+- name: Unzip DVRPC wallet
+  unarchive:
+    src: "{{ wallet_zip }}" 
+    dest: "{{ oracle_path }}/{{ client_version }}/"
+
+- name: Upload sqlnet.ora config file to include path to wallet
+  template:
+    src: sqlnet.ora.j2
+    dest: "{{ oracle_path}}/{{ client_version }}/network/admin/sqlnet.ora"
+
+# NOTE:
+#  - logout/back in required after doing this
+#  - LD_LIBRARY_PATH is overwritten in this file, but incorporates its existing value. 
+#    That's what we want. See <https://unix.stackexchange.com/a/612483/416095>.
+- name: Add environment variables (via /etc/environment)
+  lineinfile:
+    path: "/etc/environment"
+    state: present
+    regexp: "^{{ item.key }}="
+    line: "{{ item.key }}={{ item.value}}"
+  loop: "{{ oracle_env_vars | dict2items }}"
