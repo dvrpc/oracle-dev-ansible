@@ -7,6 +7,6 @@ url_path: /api/traffic-counts
 # app1_dir: /srv/api/traffic-counts
 app1_dir: /home/kwarner/traffic-counts-api
 # app1_nginx_conf_file: app1_nginx.conf.j2
-app1_nginx_conf_file: dev_nginx.conf.j2
+app1_nginx_conf_file: app1_nginx.conf.j2
 # rp_nginx_conf_file: rp_nginx.conf.j2
 gunicorn_unit_file: gunicorn.service.j2
