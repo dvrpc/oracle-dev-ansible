@@ -10,6 +10,8 @@ auto-format = true
 
 [[language]]
 name = "rust"
+auto-format = true
 
-[language.config.checkOnSave]
-command = "clippy"
+[language-server.rust-analyzer.config]
+cargo.allFeatures = true
+check.command = "clippy"
