@@ -1,5 +1,11 @@
 ---
 # tasks file for rust
+- name: Install necessary system packages
+  apt:
+    name:
+      - libssl-dev  # needed for cargo-tarpaulin
+      - pkg-config  # needed for cargo-tarpaulin
+
 - name: Update Rust or install it if not already installed.
   block:
     - name: Try to update rust (Rust is installed if this doesn't fail)
@@ -16,6 +22,10 @@
 
 - name: Install Rust LSP
   shell: ~/.cargo/bin/rustup component add rust-analyzer
+
+# Cargo watch runs a cargo command & reloads every save
+- name: Install cargo-watch
+  shell: ~/.cargo/bin/cargo install cargo-watch
 
 - name: Install Helix editor
   block:
@@ -101,3 +111,5 @@
         src: zellij_layout_default.kdl
         dest: ~/.config/zellij/layouts/default.kdl
  
+- name: Install tarpaulin (test coverage)
+  shell: ~/.cargo/bin/cargo install cargo-tarpaulin
