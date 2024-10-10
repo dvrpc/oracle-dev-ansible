@@ -23,9 +23,9 @@
 - name: Install Rust LSP
   shell: ~/.cargo/bin/rustup component add rust-analyzer
 
-# Cargo watch runs a cargo command & reloads every save
-- name: Install cargo-watch
-  shell: ~/.cargo/bin/cargo install cargo-watch
+# Bacon can run a cargo command & reloads every save
+- name: Install bacon
+  shell: ~/.cargo/bin/cargo install --locked bacon
 
 - name: Install Helix editor
   block:
