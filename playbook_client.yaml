@@ -1,0 +1,14 @@
+---
+- name: Set up Oracle Client
+  hosts: 
+    - localhost
+  # become: true
+  # become_user: root
+
+  pre_tasks:
+    - name: Update apt cache
+      apt: update_cache=yes cache_valid_time=3600
+
+  roles:
+    - role: oracle
+      tags: oracle
